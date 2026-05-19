@@ -1,0 +1,1575 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Proyecto Mechón — Estudio de Investigación</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1a2e;
+    --paper: #f5f2eb;
+    --accent: #2d6a4f;
+    --accent2: #b5451b;
+    --muted: #6b6b6b;
+    --border: #d4cfc4;
+    --card: #ffffff;
+    --highlight: #e8f4ee;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    min-height: 100vh;
+  }
+
+  /* ── SCREEN SYSTEM ── */
+  .screen { display: none; min-height: 100vh; }
+  .screen.active { display: flex; flex-direction: column; }
+
+  /* ── LANDING ── */
+  #screen-landing {
+    background: var(--ink);
+    color: var(--paper);
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+  #screen-landing::before {
+    content: '';
+    position: absolute;
+    top: -40%;
+    right: -20%;
+    width: 600px;
+    height: 600px;
+    border-radius: 50%;
+    border: 1px solid rgba(245,242,235,0.08);
+  }
+  #screen-landing::after {
+    content: '';
+    position: absolute;
+    bottom: -30%;
+    left: -15%;
+    width: 400px;
+    height: 400px;
+    border-radius: 50%;
+    border: 1px solid rgba(245,242,235,0.06);
+  }
+  .landing-inner {
+    max-width: 640px;
+    width: 100%;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+    animation: fadeUp 0.8s ease both;
+  }
+  .landing-badge {
+    display: inline-block;
+    font-size: 0.7rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    padding: 0.35rem 1rem;
+    border-radius: 999px;
+    margin-bottom: 2rem;
+  }
+  .landing-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.2rem, 6vw, 3.8rem);
+    font-weight: 900;
+    line-height: 1.1;
+    margin-bottom: 1.2rem;
+    letter-spacing: -0.02em;
+  }
+  .landing-title em {
+    font-style: italic;
+    color: var(--accent);
+  }
+  .landing-sub {
+    font-size: 1rem;
+    color: rgba(245,242,235,0.65);
+    line-height: 1.7;
+    margin-bottom: 2.5rem;
+    max-width: 480px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .landing-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.8rem;
+    margin-bottom: 2.5rem;
+  }
+  .landing-card {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+    padding: 1.2rem;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .landing-card:hover {
+    background: rgba(45,106,79,0.2);
+    border-color: var(--accent);
+    transform: translateY(-2px);
+  }
+  .lc-tag {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    margin-bottom: 0.5rem;
+  }
+  .lc-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--paper);
+    margin-bottom: 0.3rem;
+  }
+  .lc-desc {
+    font-size: 0.78rem;
+    color: rgba(245,242,235,0.5);
+    line-height: 1.5;
+  }
+  .btn-primary {
+    display: inline-block;
+    background: var(--accent);
+    color: white;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    padding: 0.9rem 2.2rem;
+    border-radius: 999px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+    letter-spacing: 0.02em;
+  }
+  .btn-primary:hover { background: #236040; transform: translateY(-1px); }
+  .btn-secondary {
+    display: inline-block;
+    background: transparent;
+    color: var(--paper);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    padding: 0.9rem 2.2rem;
+    border-radius: 999px;
+    border: 1px solid rgba(245,242,235,0.25);
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-left: 0.8rem;
+  }
+  .btn-secondary:hover { border-color: var(--paper); }
+
+  /* ── SHARED LAYOUT ── */
+  .page-header {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 1.2rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .header-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .header-logo span { color: var(--accent); }
+  .header-nav { display: flex; gap: 0.5rem; }
+  .nav-pill {
+    font-size: 0.75rem;
+    padding: 0.35rem 0.9rem;
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,0.15);
+    color: rgba(245,242,235,0.6);
+    cursor: pointer;
+    transition: all 0.2s;
+    background: none;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .nav-pill:hover, .nav-pill.active { border-color: var(--accent); color: var(--paper); }
+
+  .page-body { flex: 1; padding: 2.5rem 2rem; max-width: 760px; margin: 0 auto; width: 100%; }
+  .section-tag {
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--accent);
+    margin-bottom: 0.6rem;
+  }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.6rem, 4vw, 2.4rem);
+    font-weight: 900;
+    line-height: 1.15;
+    margin-bottom: 0.8rem;
+    letter-spacing: -0.02em;
+  }
+  .section-desc {
+    color: var(--muted);
+    font-size: 0.95rem;
+    line-height: 1.7;
+    margin-bottom: 2rem;
+    max-width: 560px;
+  }
+  hr.divider { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
+
+  /* ── ENCUESTA / FORM ── */
+  .form-block {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 1.8rem;
+    margin-bottom: 1.2rem;
+    transition: box-shadow 0.2s;
+  }
+  .form-block:focus-within { box-shadow: 0 0 0 2px var(--accent); }
+  .form-block .q-num {
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+    margin-bottom: 0.5rem;
+  }
+  .form-block .q-text {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin-bottom: 0.3rem;
+    line-height: 1.4;
+  }
+  .form-block .q-hint {
+    font-size: 0.8rem;
+    color: var(--muted);
+    margin-bottom: 1rem;
+    line-height: 1.5;
+  }
+  .radio-group { display: flex; flex-direction: column; gap: 0.5rem; }
+  .radio-option {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.7rem 1rem;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-size: 0.9rem;
+  }
+  .radio-option:hover { border-color: var(--accent); background: var(--highlight); }
+  .radio-option input { accent-color: var(--accent); width: 16px; height: 16px; }
+  .radio-option.selected { border-color: var(--accent); background: var(--highlight); }
+
+  .scale-row {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .scale-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: var(--muted);
+    margin-bottom: 0.5rem;
+  }
+  .scale-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: white;
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s;
+    color: var(--ink);
+  }
+  .scale-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .scale-btn.selected { background: var(--accent); border-color: var(--accent); color: white; }
+
+  .checkbox-group { display: flex; flex-direction: column; gap: 0.5rem; }
+  .check-option {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.7rem 1rem;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-size: 0.9rem;
+  }
+  .check-option:hover { border-color: var(--accent); background: var(--highlight); }
+  .check-option input { accent-color: var(--accent); width: 16px; height: 16px; }
+  .check-option.selected { border-color: var(--accent); background: var(--highlight); }
+
+  textarea.open-answer {
+    width: 100%;
+    padding: 0.9rem 1rem;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    resize: vertical;
+    min-height: 90px;
+    outline: none;
+    transition: border-color 0.15s;
+    color: var(--ink);
+  }
+  textarea.open-answer:focus { border-color: var(--accent); }
+
+  .progress-bar {
+    height: 3px;
+    background: var(--border);
+    border-radius: 999px;
+    margin-bottom: 2rem;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 999px;
+    transition: width 0.4s ease;
+  }
+
+  .submit-area { text-align: center; padding: 1rem 0 2rem; }
+  .submit-area .btn-submit {
+    background: var(--accent);
+    color: white;
+    border: none;
+    padding: 1rem 3rem;
+    border-radius: 999px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.02em;
+  }
+  .submit-area .btn-submit:hover { background: #236040; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(45,106,79,0.3); }
+  .submit-area .btn-submit:disabled { background: var(--muted); cursor: not-allowed; transform: none; }
+
+  /* ── CUALITATIVO ── */
+  .interview-intro {
+    background: var(--ink);
+    color: var(--paper);
+    border-radius: 16px;
+    padding: 1.8rem;
+    margin-bottom: 1.5rem;
+  }
+  .interview-intro h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    margin-bottom: 0.6rem;
+  }
+  .interview-intro p { font-size: 0.88rem; color: rgba(245,242,235,0.65); line-height: 1.7; }
+
+  .q-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 1.6rem;
+    margin-bottom: 1rem;
+    position: relative;
+  }
+  .q-card .q-number {
+    position: absolute;
+    top: 1.4rem;
+    right: 1.4rem;
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--border);
+    line-height: 1;
+  }
+  .q-card .q-label {
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    margin-bottom: 0.5rem;
+  }
+  .q-card .q-main {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    line-height: 1.4;
+    margin-bottom: 0.8rem;
+    padding-right: 3rem;
+  }
+  .q-card .q-note {
+    font-size: 0.8rem;
+    color: var(--muted);
+    line-height: 1.6;
+    padding: 0.8rem;
+    background: var(--paper);
+    border-radius: 8px;
+    border-left: 3px solid var(--accent);
+  }
+  .q-card .q-note strong { color: var(--ink); font-weight: 500; }
+  .q-card textarea {
+    width: 100%;
+    margin-top: 1rem;
+    padding: 0.8rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.88rem;
+    resize: vertical;
+    min-height: 80px;
+    outline: none;
+    transition: border-color 0.15s;
+    color: var(--ink);
+    background: var(--paper);
+  }
+  .q-card textarea:focus { border-color: var(--accent); }
+  .q-card textarea::placeholder { color: #aaa; }
+
+  .ruta-compare {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.8rem;
+    margin: 1rem 0;
+  }
+  .ruta-box {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.1rem;
+    background: var(--paper);
+  }
+  .ruta-box .ruta-label {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    margin-bottom: 0.4rem;
+  }
+  .ruta-box .ruta-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+  .ruta-box p { font-size: 0.8rem; color: var(--muted); line-height: 1.55; }
+
+  /* ── PROTOTIPO RUTA 2 ── */
+  .proto-header {
+    background: linear-gradient(135deg, var(--ink) 0%, #2d4a3e 100%);
+    color: var(--paper);
+    border-radius: 16px;
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+  }
+  .proto-header h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    margin-bottom: 0.5rem;
+  }
+  .proto-header p { font-size: 0.88rem; color: rgba(245,242,235,0.65); }
+
+  .upload-zone {
+    border: 2px dashed var(--border);
+    border-radius: 16px;
+    padding: 2.5rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: var(--card);
+    margin-bottom: 1.2rem;
+  }
+  .upload-zone:hover { border-color: var(--accent); background: var(--highlight); }
+  .upload-zone.active { border-color: var(--accent); background: var(--highlight); }
+  .upload-icon { font-size: 2.5rem; margin-bottom: 0.8rem; }
+  .upload-zone h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    margin-bottom: 0.4rem;
+  }
+  .upload-zone p { font-size: 0.85rem; color: var(--muted); }
+  #file-input { display: none; }
+
+  .ramo-select-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.6rem;
+    margin-bottom: 1.5rem;
+  }
+  .ramo-btn {
+    padding: 0.7rem 0.5rem;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--card);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-align: center;
+    color: var(--ink);
+  }
+  .ramo-btn:hover { border-color: var(--accent); background: var(--highlight); }
+  .ramo-btn.selected { background: var(--accent); border-color: var(--accent); color: white; }
+
+  .output-area {
+    display: none;
+    animation: fadeUp 0.5s ease both;
+  }
+  .output-area.visible { display: block; }
+  .output-tab-row {
+    display: flex;
+    gap: 0.4rem;
+    margin-bottom: 1.2rem;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 0;
+  }
+  .output-tab {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.82rem;
+    cursor: pointer;
+    border: none;
+    background: none;
+    color: var(--muted);
+    font-family: 'DM Sans', sans-serif;
+    border-bottom: 2px solid transparent;
+    transition: all 0.15s;
+    margin-bottom: -1px;
+  }
+  .output-tab.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 500; }
+  .output-panel { display: none; }
+  .output-panel.active { display: block; animation: fadeUp 0.3s ease both; }
+
+  .output-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 1.6rem;
+    margin-bottom: 1rem;
+  }
+  .output-card h4 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .output-card ul { padding-left: 1.2rem; }
+  .output-card li { font-size: 0.9rem; line-height: 1.7; margin-bottom: 0.3rem; color: var(--ink); }
+  .output-card p { font-size: 0.9rem; line-height: 1.7; color: var(--ink); }
+
+  .quiz-question {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.3rem;
+    margin-bottom: 0.8rem;
+  }
+  .quiz-question p {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    margin-bottom: 0.8rem;
+  }
+  .quiz-options { display: flex; flex-direction: column; gap: 0.4rem; }
+  .quiz-opt {
+    padding: 0.55rem 0.9rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.15s;
+    background: var(--paper);
+  }
+  .quiz-opt:hover { border-color: var(--accent); background: var(--highlight); }
+  .quiz-opt.correct { background: #d1fae5; border-color: #059669; color: #065f46; }
+  .quiz-opt.wrong { background: #fee2e2; border-color: #dc2626; color: #991b1b; }
+
+  .loading-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(26,26,46,0.85);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 1rem;
+    color: var(--paper);
+  }
+  .loading-overlay.visible { display: flex; }
+  .spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(245,242,235,0.2);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  .loading-text { font-size: 0.9rem; color: rgba(245,242,235,0.7); }
+
+  /* ── KIT RUTA 3 ── */
+  .kit-hero {
+    background: var(--ink);
+    color: var(--paper);
+    border-radius: 16px;
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+  }
+  .kit-hero h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    margin-bottom: 0.5rem;
+  }
+  .kit-hero p { font-size: 0.88rem; color: rgba(245,242,235,0.6); }
+  .kit-ramo-selector { margin-bottom: 1.5rem; }
+  .kit-ramo-selector h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+  }
+  .kit-section {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    margin-bottom: 1.2rem;
+    overflow: hidden;
+  }
+  .kit-section-header {
+    padding: 1.2rem 1.6rem;
+    background: var(--paper);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    border-bottom: 1px solid var(--border);
+  }
+  .kit-section-header h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .kit-section-body { padding: 1.4rem 1.6rem; }
+  .kit-section-body p { font-size: 0.9rem; line-height: 1.7; margin-bottom: 0.8rem; color: var(--ink); }
+  .kit-section-body ul { padding-left: 1.2rem; }
+  .kit-section-body li { font-size: 0.9rem; line-height: 1.8; color: var(--ink); }
+
+  .checklist-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.6rem 0;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+  }
+  .checklist-item:last-child { border-bottom: none; }
+  .check-box {
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--border);
+    border-radius: 5px;
+    flex-shrink: 0;
+    margin-top: 0.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+    font-size: 0.75rem;
+    color: white;
+  }
+  .checklist-item.done .check-box { background: var(--accent); border-color: var(--accent); }
+  .checklist-item.done .check-box::after { content: '✓'; }
+  .checklist-item.done span { text-decoration: line-through; color: var(--muted); }
+  .checklist-item span { font-size: 0.9rem; line-height: 1.5; }
+
+  .order-step {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    padding: 0.8rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .order-step:last-child { border-bottom: none; }
+  .step-num {
+    width: 28px;
+    height: 28px;
+    background: var(--accent);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .step-content strong { display: block; font-size: 0.9rem; margin-bottom: 0.2rem; }
+  .step-content p { font-size: 0.82rem; color: var(--muted); line-height: 1.5; }
+
+  /* ── GRACIAS ── */
+  #screen-thanks {
+    align-items: center;
+    justify-content: center;
+    background: var(--ink);
+    color: var(--paper);
+    padding: 2rem;
+    text-align: center;
+  }
+  .thanks-inner { max-width: 500px; animation: fadeUp 0.6s ease both; }
+  .thanks-icon { font-size: 3.5rem; margin-bottom: 1.5rem; }
+  .thanks-inner h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    margin-bottom: 0.8rem;
+  }
+  .thanks-inner p { color: rgba(245,242,235,0.6); font-size: 0.95rem; line-height: 1.7; margin-bottom: 2rem; }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 600px) {
+    .landing-cards { grid-template-columns: 1fr; }
+    .ruta-compare { grid-template-columns: 1fr; }
+    .ramo-select-grid { grid-template-columns: repeat(2, 1fr); }
+    .page-body { padding: 1.5rem 1rem; }
+    .page-header { padding: 1rem; }
+    .header-nav { gap: 0.3rem; }
+    .nav-pill { font-size: 0.68rem; padding: 0.3rem 0.7rem; }
+  }
+
+  .tag-pill {
+    display: inline-block;
+    font-size: 0.68rem;
+    padding: 0.2rem 0.7rem;
+    border-radius: 999px;
+    background: var(--highlight);
+    color: var(--accent);
+    border: 1px solid rgba(45,106,79,0.2);
+    margin-bottom: 0.8rem;
+    font-weight: 500;
+  }
+</style>
+</head>
+<body>
+
+<!-- LOADING OVERLAY -->
+<div class="loading-overlay" id="loading">
+  <div class="spinner"></div>
+  <div class="loading-text">Procesando tu material…</div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     SCREEN 1: LANDING
+═══════════════════════════════════════════ -->
+<div class="screen active" id="screen-landing">
+  <div class="landing-inner">
+    <div class="landing-badge">Proyecto Mechón · FEN UChile · 2026</div>
+    <h1 class="landing-title">Ayúdanos a<br>entender <em>cómo</em><br>estudias.</h1>
+    <p class="landing-sub">Somos un grupo de Negocios II investigando cómo mejorar el apoyo académico para estudiantes de primer año. Todo toma menos de 5 minutos.</p>
+
+    <div class="landing-cards">
+      <div class="landing-card" onclick="goTo('screen-encuesta')">
+        <div class="lc-tag">Cuantitativo · 3 min</div>
+        <div class="lc-title">Encuesta rápida</div>
+        <div class="lc-desc">10 preguntas sobre tus hábitos de estudio y qué herramientas usarías.</div>
+      </div>
+      <div class="landing-card" onclick="goTo('screen-entrevista')">
+        <div class="lc-tag">Cualitativo · 15 min</div>
+        <div class="lc-title">Guía de entrevista</div>
+        <div class="lc-desc">Para entrevistadores: preguntas guiadas con espacio para registrar respuestas.</div>
+      </div>
+      <div class="landing-card" onclick="goTo('screen-prototipo')">
+        <div class="lc-tag">Prototipo · Ruta 2</div>
+        <div class="lc-title">Página Mechona Inteligente</div>
+        <div class="lc-desc">Simula cómo funcionaría la herramienta con material real de un ramo.</div>
+      </div>
+      <div class="landing-card" onclick="goTo('screen-kit')">
+        <div class="lc-tag">Prototipo · Ruta 3</div>
+        <div class="lc-title">Kit de Estudio Mechón</div>
+        <div class="lc-desc">Explora el kit semanal por ramo: guía, checklist y plantilla de estudio.</div>
+      </div>
+    </div>
+
+    <button class="btn-primary" onclick="goTo('screen-encuesta')">Comenzar con la encuesta</button>
+    <button class="btn-secondary" onclick="goTo('screen-entrevista')">Ver guía de entrevista</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     SCREEN 2: ENCUESTA CUANTITATIVA
+═══════════════════════════════════════════ -->
+<div class="screen" id="screen-encuesta">
+  <div class="page-header">
+    <div class="header-logo" onclick="goTo('screen-landing')">Mechón<span>Lab</span></div>
+    <div class="header-nav">
+      <button class="nav-pill active">Encuesta</button>
+      <button class="nav-pill" onclick="goTo('screen-entrevista')">Entrevista</button>
+      <button class="nav-pill" onclick="goTo('screen-prototipo')">Prototipo</button>
+      <button class="nav-pill" onclick="goTo('screen-kit')">Kit</button>
+    </div>
+  </div>
+  <div class="page-body">
+    <div class="progress-bar"><div class="progress-fill" id="enc-progress" style="width:0%"></div></div>
+    <div class="section-tag">Experimento Cuantitativo</div>
+    <h1 class="section-title">¿Cómo estudias hoy?</h1>
+    <p class="section-desc">10 preguntas anónimas sobre tus hábitos y qué herramientas te servirían. Toma menos de 3 minutos.</p>
+
+    <!-- P1 -->
+    <div class="form-block">
+      <div class="q-num">Pregunta 1 de 10</div>
+      <div class="q-text">¿Eres estudiante de primer año en la Universidad de Chile?</div>
+      <div class="q-hint">Filtro de participación</div>
+      <div class="radio-group" id="q1">
+        <label class="radio-option"><input type="radio" name="q1" value="si" onchange="updateProgress();markSelected(this)"> Sí</label>
+        <label class="radio-option"><input type="radio" name="q1" value="no" onchange="updateProgress();markSelected(this)"> No</label>
+      </div>
+    </div>
+
+    <!-- P2 -->
+    <div class="form-block">
+      <div class="q-num">Pregunta 2 de 10</div>
+      <div class="q-text">¿Ingresaste por vía de admisión especial (PACE, SIPEE u otra)?</div>
+      <div class="radio-group" id="q2">
+        <label class="radio-option"><input type="radio" name="q2" value="si" onchange="updateProgress();markSelected(this)"> Sí</label>
+        <label class="radio-option"><input type="radio" name="q2" value="no" onchange="updateProgress();markSelected(this)"> No</label>
+        <label class="radio-option"><input type="radio" name="q2" value="nodecir" onchange="updateProgress();markSelected(this)"> Prefiero no decir</label>
+      </div>
+    </div>
+
+    <!-- P3 -->
+    <div class="form-block">
+      <div class="q-num">Pregunta 3 de 10</div>
+      <div class="q-text">¿Cuál es tu principal dificultad al estudiar?</div>
+      <div class="radio-group" id="q3">
+        <label class="radio-option"><input type="radio" name="q3" value="a" onchange="updateProgress();markSelected(this)"> No entiendo el material aunque lo leo varias veces</label>
+        <label class="radio-option"><input type="radio" name="q3" value="b" onchange="updateProgress();markSelected(this)"> No sé por dónde empezar ni cómo organizarme</label>
+        <label class="radio-option"><input type="radio" name="q3" value="c" onchange="updateProgress();markSelected(this)"> Estudio mucho pero igual me va mal en las pruebas</label>
+        <label class="radio-option"><input type="radio" name="q3" value="d" onchange="updateProgress();markSelected(this)"> Me falta tiempo para estudiar todo</label>
+        <label class="radio-option"><input type="radio" name="q3" value="e" onchange="updateProgress();markSelected(this)"> No tengo mayores dificultades</label>
+      </div>
+    </div>
+
+    <!-- P4 -->
+    <div class="form-block">
+      <div class="q-num">Pregunta 4 de 10</div>
+      <div class="q-text">¿Qué recursos usas actualmente para estudiar?</div>
+      <div class="q-hint">Puedes seleccionar más de uno</div>
+      <div class="checkbox-group" id="q4">
+        <label class="check-option"><input type="checkbox" name="q4" value="a" onchange="markCheckSelected(this)"> Ayudantías solidarias</label>
+        <label class="check-option"><input type="checkbox" name="q4" value="b" onchange="markCheckSelected(this)"> ChatGPT u otra IA</label>
+        <label class="check-option"><input type="checkbox" name="q4" value="c" onchange="markCheckSelected(this)"> Videos de YouTube / FENvid</label>
+        <label class="check-option"><input type="checkbox" name="q4" value="d" onchange="markCheckSelected(this)"> Nube Mechona (Drive FEN)</label>
+        <label class="check-option"><input type="checkbox" name="q4" value="e" onchange="markCheckSelected(this)"> Estudio solo con el material del ramo</label>
+        <label class="check-option"><input type="checkbox" name="q4" value="f" onchange="markCheckSelected(this)"> Clases particulares</label>
+      </div>
+    </div>
+
+    <!-- P5 -->
+    <div class="form-block">
+      <div class="q-num">Pregunta 5 de 10</div>
+      <div class="q-text">¿Qué tan útiles te resultan esos recursos actualmente?</div>
+      <div class="scale-labels"><span>Nada útiles</span><span>Muy útiles</span></div>
+      <div class="scale-row" id="q5">
+        <button class="scale-btn" onclick="selectScale('q5',1,this)">1</button>
+        <button class="scale-btn" onclick="selectScale('q5',2,this)">2</button>
+        <button class="scale-btn" onclick="selectScale('q5',3,this)">3</button>
+        <button class="scale-btn" onclick="selectScale('q5',4,this)">4</button>
+        <button class="scale-btn" onclick="selectScale('q5',5,this)">5</button>
+      </div>
+    </div>
+
+    <!-- P6 -->
+    <div class="form-block">
+      <div class="q-num">Pregunta 6 de 10 — Ruta 2</div>
+      <div class="q-text">"Una herramienta donde subes el PPT o guía de tu ramo y recibes un resumen simple, explicación adaptada, quiz y simulador de prueba." ¿Qué tan útil te parece?</div>
+      <div class="scale-labels"><span>Nada útil</span><span>Muy útil</span></div>
+      <div class="scale-row" id="q6">
+        <button class="scale-btn" onclick="selectScale('q6',1,this)">1</button>
+        <button class="scale-btn" onclick="selectScale('q6',2,this)">2</button>
+        <button class="scale-btn" onclick="selectScale('q6',3,this)">3</button>
+        <button class="scale-btn" onclick="selectScale('q6',4,this)">4</button>
+        <button class="scale-btn" onclick="selectScale('q6',5,this)">5</button>
+      </div>
+    </div>
+
+    <!-- P7 -->
+    <div class="form-block">
+      <div class="q-num">Pregunta 7 de 10 — Ruta 3</div>
+      <div class="q-text">"Un kit semanal por ramo con guía de estudio, checklist pre-prueba, plantilla paso a paso y canal de apoyo por WhatsApp." ¿Qué tan útil te parece?</div>
+      <div class="scale-labels"><span>Nada útil</span><span>Muy útil</span></div>
+      <div class="scale-row" id="q7">
+        <button class="scale-btn" onclick="selectScale('q7',1,this)">1</button>
+        <button class="scale-btn" onclick="selectScale('q7',2,this)">2</button>
+        <button class="scale-btn" onclick="selectScale('q7',3,this)">3</button>
+        <button class="scale-btn" onclick="selectScale('q7',4,this)">4</button>
+        <button class="scale-btn" onclick="selectScale('q7',5,this)">5</button>
+      </div>
+    </div>
+
+    <!-- P8 -->
+    <div class="form-block">
+      <div class="q-num">Pregunta 8 de 10</div>
+      <div class="q-text">Si solo pudieras usar una, ¿cuál elegirías?</div>
+      <div class="radio-group" id="q8">
+        <label class="radio-option"><input type="radio" name="q8" value="r2" onchange="updateProgress();markSelected(this)"> Ruta 2 — Página Mechona Inteligente (sube tu material, recibe resumen + quiz)</label>
+        <label class="radio-option"><input type="radio" name="q8" value="r3" onchange="updateProgress();markSelected(this)"> Ruta 3 — Kit de Estudio Mechón (guía semanal + checklist + plantilla)</label>
+        <label class="radio-option"><input type="radio" name="q8" value="ninguna" onchange="updateProgress();markSelected(this)"> Ninguna, prefiero lo que existe hoy</label>
+      </div>
+    </div>
+
+    <!-- P9 -->
+    <div class="form-block">
+      <div class="q-num">Pregunta 9 de 10</div>
+      <div class="q-text">¿Con qué frecuencia crees que la usarías?</div>
+      <div class="radio-group" id="q9">
+        <label class="radio-option"><input type="radio" name="q9" value="a" onchange="updateProgress();markSelected(this)"> Solo antes de pruebas o certámenes</label>
+        <label class="radio-option"><input type="radio" name="q9" value="b" onchange="updateProgress();markSelected(this)"> 1-2 veces por semana mientras estudio</label>
+        <label class="radio-option"><input type="radio" name="q9" value="c" onchange="updateProgress();markSelected(this)"> Casi todos los días</label>
+        <label class="radio-option"><input type="radio" name="q9" value="d" onchange="updateProgress();markSelected(this)"> Probablemente no la usaría</label>
+      </div>
+    </div>
+
+    <!-- P10 -->
+    <div class="form-block">
+      <div class="q-num">Pregunta 10 de 10</div>
+      <div class="q-text">¿Cuánto pagarías mensualmente por acceso a la herramienta que elegiste?</div>
+      <div class="radio-group" id="q10">
+        <label class="radio-option"><input type="radio" name="q10" value="gratis" onchange="updateProgress();markSelected(this)"> $0 — tiene que ser completamente gratis</label>
+        <label class="radio-option"><input type="radio" name="q10" value="2k" onchange="updateProgress();markSelected(this)"> Hasta $2.000 CLP/mes</label>
+        <label class="radio-option"><input type="radio" name="q10" value="5k" onchange="updateProgress();markSelected(this)"> $3.000 – $5.000 CLP/mes</label>
+        <label class="radio-option"><input type="radio" name="q10" value="mas" onchange="updateProgress();markSelected(this)"> Más de $5.000 CLP/mes</label>
+      </div>
+    </div>
+
+    <div class="submit-area">
+      <p style="font-size:0.8rem;color:var(--muted);margin-bottom:1rem;">Tus respuestas son anónimas y solo se usan para este proyecto académico.</p>
+      <button class="btn-submit" id="enc-submit" onclick="submitEncuesta()">Enviar respuestas →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     SCREEN 3: GUÍA DE ENTREVISTA CUALITATIVA
+═══════════════════════════════════════════ -->
+<div class="screen" id="screen-entrevista">
+  <div class="page-header">
+    <div class="header-logo" onclick="goTo('screen-landing')">Mechón<span>Lab</span></div>
+    <div class="header-nav">
+      <button class="nav-pill" onclick="goTo('screen-encuesta')">Encuesta</button>
+      <button class="nav-pill active">Entrevista</button>
+      <button class="nav-pill" onclick="goTo('screen-prototipo')">Prototipo</button>
+      <button class="nav-pill" onclick="goTo('screen-kit')">Kit</button>
+    </div>
+  </div>
+  <div class="page-body">
+    <div class="section-tag">Experimento Cualitativo · Guía para entrevistador</div>
+    <h1 class="section-title">Entrevista de concepto</h1>
+    <p class="section-desc">Esta guía es para quien conduce la entrevista. Registra las respuestas del entrevistado en cada campo. Duración estimada: 15-20 minutos.</p>
+
+    <div class="interview-intro">
+      <h3>Introducción al entrevistado</h3>
+      <p>Decir en voz alta: <em>"Somos estudiantes de Negocios II y estamos investigando cómo mejorar el estudio de los mechones. No hay respuestas correctas ni incorrectas — nos interesa tu experiencia real. Esto es anónimo y no te tomaremos más de 20 minutos."</em></p>
+    </div>
+
+    <!-- BLOQUE CONTEXTO -->
+    <div class="tag-pill">Bloque 1 — Contexto del estudiante</div>
+
+    <div class="q-card">
+      <div class="q-number">1</div>
+      <div class="q-label">Contexto · Apertura</div>
+      <div class="q-main">¿Cómo estudias normalmente antes de un certamen? ¿Qué haces con el material del ramo (PPT, guías, apuntes)?</div>
+      <div class="q-note"><strong>Observar:</strong> si menciona la Nube Mechona, ChatGPT, YouTube u otros recursos de forma espontánea. No sugerir nada aún.</div>
+      <textarea placeholder="Registrar respuesta aquí…"></textarea>
+    </div>
+
+    <div class="q-card">
+      <div class="q-number">2</div>
+      <div class="q-label">Contexto · Barreras</div>
+      <div class="q-main">¿Has ido alguna vez a una ayudantía solidaria? ¿Por qué sí o por qué no?</div>
+      <div class="q-note"><strong>Observar:</strong> si menciona vergüenza, horario, desconocimiento o utilidad percibida.</div>
+      <textarea placeholder="Registrar respuesta aquí…"></textarea>
+    </div>
+
+    <div class="q-card">
+      <div class="q-number">3</div>
+      <div class="q-label">Contexto · IA actual</div>
+      <div class="q-main">¿Usas ChatGPT para estudiar? ¿Para qué exactamente? ¿Qué tan satisfecho quedas con el resultado?</div>
+      <div class="q-note"><strong>Observar:</strong> si dice que "no sirve para los certámenes específicos", si lo usa de forma desordenada, si lo compara con buscar en la Nube Mechona.</div>
+      <textarea placeholder="Registrar respuesta aquí…"></textarea>
+    </div>
+
+    <div class="q-card">
+      <div class="q-number">4</div>
+      <div class="q-label">Contexto · Dolor profundo</div>
+      <div class="q-main">¿Qué es lo que más te cuesta cuando intentas estudiar solo, sin ayuda de nadie?</div>
+      <div class="q-note"><strong>Observar:</strong> si nombra organización, comprensión, motivación o falta de práctica. Esto define qué ruta resuena más.</div>
+      <textarea placeholder="Registrar respuesta aquí…"></textarea>
+    </div>
+
+    <hr class="divider">
+    <div class="tag-pill">Bloque 2 — Reacción a las rutas</div>
+    <p style="font-size:0.85rem;color:var(--muted);margin-bottom:1.2rem;line-height:1.6;">Mostrar al entrevistado las dos descripciones siguientes. <strong>No explicar nada antes</strong> — dejar que lea y reaccione espontáneamente.</p>
+
+    <div class="ruta-compare">
+      <div class="ruta-box">
+        <div class="ruta-label">Opción A · Ruta 2</div>
+        <div class="ruta-name">Página Mechona Inteligente</div>
+        <p>Subes el PPT o guía de tu ramo y recibes: resumen simple, explicación adaptada, quiz y preguntas tipo certamen. Todo en un mismo lugar.</p>
+      </div>
+      <div class="ruta-box">
+        <div class="ruta-label">Opción B · Ruta 3</div>
+        <div class="ruta-name">Kit de Estudio Mechón</div>
+        <p>Un kit semanal por ramo con guía de qué estudiar, en qué orden, ejercicios resueltos, checklist pre-prueba y canal de apoyo por WhatsApp.</p>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-number">5</div>
+      <div class="q-label">Reacción · Ruta 2</div>
+      <div class="q-main">¿La Opción A te habría servido antes de tu último certamen? ¿La habrías usado? ¿Qué le cambiarías?</div>
+      <div class="q-note"><strong>Observar:</strong> si compara con ChatGPT ("eso ya lo hace ChatGPT"), si menciona cuándo la usaría, qué feature le llama más la atención.</div>
+      <textarea placeholder="Registrar respuesta aquí…"></textarea>
+    </div>
+
+    <div class="q-card">
+      <div class="q-number">6</div>
+      <div class="q-label">Reacción · Ruta 3</div>
+      <div class="q-main">¿Y la Opción B? ¿Qué diferencia ves con la opción anterior? ¿Cuál resuelve mejor tu problema?</div>
+      <div class="q-note"><strong>Observar:</strong> si prefiere la guía estructurada sobre la herramienta con IA, si menciona que "necesita que alguien le diga qué estudiar".</div>
+      <textarea placeholder="Registrar respuesta aquí…"></textarea>
+    </div>
+
+    <div class="q-card">
+      <div class="q-number">7</div>
+      <div class="q-label">Decisión · Elección</div>
+      <div class="q-main">Si solo pudieras usar una de las dos, ¿cuál elegirías y por qué?</div>
+      <div class="q-note"><strong>Anotar la opción elegida:</strong> A (Ruta 2) / B (Ruta 3) / Ninguna. Registrar razón exacta con sus propias palabras.</div>
+      <textarea placeholder="Opción elegida y razón exacta…"></textarea>
+    </div>
+
+    <div class="q-card">
+      <div class="q-number">8</div>
+      <div class="q-label">Uso · Cuándo</div>
+      <div class="q-main">¿Cuándo exactamente la usarías — el día antes de la prueba, mientras estudias durante la semana, o en otro momento?</div>
+      <textarea placeholder="Registrar respuesta aquí…"></textarea>
+    </div>
+
+    <hr class="divider">
+    <div class="tag-pill">Bloque 3 — Valor y disposición a pagar</div>
+
+    <div class="q-card">
+      <div class="q-number">9</div>
+      <div class="q-label">Valor · Precio</div>
+      <div class="q-main">¿Pagarías por alguna de estas herramientas? ¿Cuánto máximo al mes? ¿O tiene que ser completamente gratis para que la uses?</div>
+      <div class="q-note"><strong>No sugerir precios.</strong> Dejar que el entrevistado nombre una cifra primero. Si duda, preguntar: "¿Pagarías lo mismo que un café al mes?"</div>
+      <textarea placeholder="Precio mencionado y condiciones…"></textarea>
+    </div>
+
+    <div class="q-card">
+      <div class="q-number">10</div>
+      <div class="q-label">Valor · Retención</div>
+      <div class="q-main">¿Qué tendría que tener la herramienta que elegiste para que la usaras de forma constante durante todo el semestre, y no solo una vez?</div>
+      <div class="q-note"><strong>Observar:</strong> si menciona personalización por ramo, recordatorios, comunidad, calidad del output o simplicidad de uso.</div>
+      <textarea placeholder="Factores clave de retención mencionados…"></textarea>
+    </div>
+
+    <div class="submit-area">
+      <button class="btn-submit" onclick="submitEntrevista()">Guardar registro de entrevista →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     SCREEN 4: PROTOTIPO RUTA 2
+═══════════════════════════════════════════ -->
+<div class="screen" id="screen-prototipo">
+  <div class="page-header">
+    <div class="header-logo" onclick="goTo('screen-landing')">Mechón<span>Lab</span></div>
+    <div class="header-nav">
+      <button class="nav-pill" onclick="goTo('screen-encuesta')">Encuesta</button>
+      <button class="nav-pill" onclick="goTo('screen-entrevista')">Entrevista</button>
+      <button class="nav-pill active">Prototipo</button>
+      <button class="nav-pill" onclick="goTo('screen-kit')">Kit</button>
+    </div>
+  </div>
+  <div class="page-body">
+    <div class="proto-header">
+      <div class="section-tag" style="color:rgba(245,242,235,0.5)">Prototipo · Ruta 2</div>
+      <h2>Página Mechona Inteligente</h2>
+      <p>Sube el material de tu ramo o elige uno de ejemplo y prueba cómo funciona.</p>
+    </div>
+
+    <div class="section-tag">Paso 1 — Elige tu ramo</div>
+    <div class="ramo-select-grid" id="ramo-grid">
+      <button class="ramo-btn" onclick="selectRamo(this,'Cálculo I')">Cálculo I</button>
+      <button class="ramo-btn" onclick="selectRamo(this,'Álgebra Lineal')">Álgebra Lineal</button>
+      <button class="ramo-btn" onclick="selectRamo(this,'Microeconomía')">Microeconomía</button>
+      <button class="ramo-btn" onclick="selectRamo(this,'Contabilidad')">Contabilidad</button>
+      <button class="ramo-btn" onclick="selectRamo(this,'Estadística')">Estadística</button>
+      <button class="ramo-btn" onclick="selectRamo(this,'Introducción a la Empresa')">Intro. Empresa</button>
+    </div>
+
+    <div class="section-tag">Paso 2 — Sube tu material o usa el de ejemplo</div>
+    <div class="upload-zone" id="upload-zone" onclick="document.getElementById('file-input').click()" ondragover="event.preventDefault();this.classList.add('active')" ondragleave="this.classList.remove('active')" ondrop="handleDrop(event)">
+      <div class="upload-icon">📄</div>
+      <h3 id="upload-text">Arrastra tu PDF o PPT aquí</h3>
+      <p id="upload-sub">o haz clic para seleccionar · También puedes usar el material de ejemplo</p>
+      <input type="file" id="file-input" accept=".pdf,.ppt,.pptx" onchange="handleFile(this)">
+    </div>
+
+    <div style="text-align:center;margin:-0.5rem 0 1.5rem;">
+      <button class="btn-primary" onclick="generateOutput()" id="gen-btn">Generar material de estudio →</button>
+    </div>
+
+    <!-- OUTPUT AREA -->
+    <div class="output-area" id="output-area">
+      <div class="output-tab-row">
+        <button class="output-tab active" onclick="switchTab('tab-resumen',this)">📋 Resumen</button>
+        <button class="output-tab" onclick="switchTab('tab-explicacion',this)">💡 Explicación simple</button>
+        <button class="output-tab" onclick="switchTab('tab-quiz',this)">✏️ Quiz</button>
+        <button class="output-tab" onclick="switchTab('tab-simulador',this)">🎯 Simulador</button>
+      </div>
+
+      <div class="output-panel active" id="tab-resumen">
+        <div class="output-card">
+          <h4>📋 Resumen del material — <span id="ramo-name-r">Cálculo I</span></h4>
+          <div id="resumen-content">
+            <p><strong>Tema central:</strong> Límites y continuidad de funciones.</p>
+            <p style="margin-top:0.8rem"><strong>Ideas clave:</strong></p>
+            <ul>
+              <li>El límite de una función describe el valor al que se aproxima f(x) cuando x se acerca a un punto, sin necesariamente alcanzarlo.</li>
+              <li>Una función es continua en un punto si el límite existe, la función está definida en ese punto, y ambos valores son iguales.</li>
+              <li>Las indeterminaciones más comunes son 0/0 y ∞/∞ — se resuelven con L'Hôpital o factorización.</li>
+              <li>La regla de L'Hôpital: si lím f(x)/g(x) genera indeterminación, el límite es igual a lím f'(x)/g'(x).</li>
+            </ul>
+            <p style="margin-top:0.8rem"><strong>Lo que más pregunta el profesor en certamen:</strong></p>
+            <ul>
+              <li>Calcular límites laterales y verificar si son iguales.</li>
+              <li>Determinar si una función es continua en un punto dado.</li>
+              <li>Resolver indeterminaciones con factorización o L'Hôpital.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="output-panel" id="tab-explicacion">
+        <div class="output-card">
+          <h4>💡 Explicación simple — sin jerga técnica</h4>
+          <p>Imagina que estás caminando hacia una pared. El <strong>límite</strong> es el punto al que te estás acercando, aunque nunca lo toques. Si la pared desaparece justo cuando llegas y aparece donde esperabas — eso es una función <strong>continua</strong>. Si de repente hay un hoyo en el piso o la pared está en otro lugar, la función <strong>no es continua</strong>.</p>
+          <p style="margin-top:1rem">Cuando el límite te da 0/0 o ∞/∞, no es que no exista — solo que tienes que trabajar un poco más para encontrarlo. Es como cuando una fracción parece indefinida pero puedes simplificarla.</p>
+          <p style="margin-top:1rem"><strong>¿Cuándo usar L'Hôpital?</strong> Solo cuando obtienes 0/0 o ∞/∞. Derivas arriba y abajo por separado — no es la regla del cociente.</p>
+        </div>
+      </div>
+
+      <div class="output-panel" id="tab-quiz">
+        <div class="output-card">
+          <h4>✏️ Quiz de práctica</h4>
+          <p style="font-size:0.85rem;color:var(--muted);margin-bottom:1.2rem;">Haz clic en la respuesta que creas correcta.</p>
+        </div>
+        <div class="quiz-question">
+          <p>1. ¿Cuál es la condición para que una función f sea continua en x = a?</p>
+          <div class="quiz-options">
+            <div class="quiz-opt" onclick="checkQuiz(this,'wrong')">a) Que f(a) exista solamente</div>
+            <div class="quiz-opt" onclick="checkQuiz(this,'correct')">b) Que f(a) exista, el límite exista y sean iguales</div>
+            <div class="quiz-opt" onclick="checkQuiz(this,'wrong')">c) Que el límite lateral derecho exista</div>
+            <div class="quiz-opt" onclick="checkQuiz(this,'wrong')">d) Que la función sea derivable en ese punto</div>
+          </div>
+        </div>
+        <div class="quiz-question">
+          <p>2. Si al calcular un límite obtienes 0/0, debes:</p>
+          <div class="quiz-options">
+            <div class="quiz-opt" onclick="checkQuiz(this,'wrong')">a) Concluir que el límite no existe</div>
+            <div class="quiz-opt" onclick="checkQuiz(this,'wrong')">b) Aplicar la regla del cociente</div>
+            <div class="quiz-opt" onclick="checkQuiz(this,'correct')">c) Intentar resolver la indeterminación (factorizar o L'Hôpital)</div>
+            <div class="quiz-opt" onclick="checkQuiz(this,'wrong')">d) El límite es siempre 0</div>
+          </div>
+        </div>
+        <div class="quiz-question">
+          <p>3. La regla de L'Hôpital dice que si lím f(x)/g(x) genera indeterminación, entonces:</p>
+          <div class="quiz-options">
+            <div class="quiz-opt" onclick="checkQuiz(this,'wrong')">a) El límite es f'(x) · g'(x)</div>
+            <div class="quiz-opt" onclick="checkQuiz(this,'correct')">b) El límite es lím f'(x) / g'(x)</div>
+            <div class="quiz-opt" onclick="checkQuiz(this,'wrong')">c) El límite es siempre 1</div>
+            <div class="quiz-opt" onclick="checkQuiz(this,'wrong')">d) Se aplica la derivada del cociente</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="output-panel" id="tab-simulador">
+        <div class="output-card">
+          <h4>🎯 Preguntas tipo certamen</h4>
+          <p style="font-size:0.85rem;color:var(--muted);margin-bottom:1.2rem;">Preguntas similares a las que ha puesto el profesor en evaluaciones pasadas según el material de la Nube Mechona.</p>
+          <ul>
+            <li style="margin-bottom:0.8rem"><strong>Pregunta 1:</strong> Calcule lím (x→2) de (x² - 4)/(x - 2). Justifique si la función es continua en x = 2.</li>
+            <li style="margin-bottom:0.8rem"><strong>Pregunta 2:</strong> Determine los puntos de discontinuidad de f(x) = (x² - 1)/(x² - 3x + 2) y clasifíquelos.</li>
+            <li style="margin-bottom:0.8rem"><strong>Pregunta 3:</strong> Use L'Hôpital para calcular lím (x→0) de (sin x)/x.</li>
+            <li><strong>Pregunta 4 (desarrollo):</strong> Una empresa modela su costo con f(x) = (x³ - 8)/(x - 2) para x ≠ 2. ¿Puede definirse f(2) para hacer la función continua? Justifique.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div style="margin-top:1.5rem;padding:1.2rem;background:var(--highlight);border-radius:12px;border:1px solid rgba(45,106,79,0.2)">
+        <p style="font-size:0.85rem;color:var(--accent);font-weight:500;margin-bottom:0.4rem">¿Te fue útil este output?</p>
+        <p style="font-size:0.82rem;color:var(--muted);margin-bottom:0.8rem">Tu feedback nos ayuda a mejorar la herramienta.</p>
+        <div style="display:flex;gap:0.5rem;flex-wrap:wrap">
+          <button onclick="feedback('util')" style="padding:0.5rem 1rem;border-radius:999px;border:1px solid var(--accent);background:white;color:var(--accent);font-size:0.82rem;cursor:pointer;">👍 Sí, muy útil</button>
+          <button onclick="feedback('mas_o_menos')" style="padding:0.5rem 1rem;border-radius:999px;border:1px solid var(--border);background:white;color:var(--ink);font-size:0.82rem;cursor:pointer;">😐 Más o menos</button>
+          <button onclick="feedback('no')" style="padding:0.5rem 1rem;border-radius:999px;border:1px solid var(--border);background:white;color:var(--ink);font-size:0.82rem;cursor:pointer;">👎 No me sirvió</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     SCREEN 5: KIT RUTA 3
+═══════════════════════════════════════════ -->
+<div class="screen" id="screen-kit">
+  <div class="page-header">
+    <div class="header-logo" onclick="goTo('screen-landing')">Mechón<span>Lab</span></div>
+    <div class="header-nav">
+      <button class="nav-pill" onclick="goTo('screen-encuesta')">Encuesta</button>
+      <button class="nav-pill" onclick="goTo('screen-entrevista')">Entrevista</button>
+      <button class="nav-pill" onclick="goTo('screen-prototipo')">Prototipo</button>
+      <button class="nav-pill active">Kit</button>
+    </div>
+  </div>
+  <div class="page-body">
+    <div class="kit-hero">
+      <div class="section-tag" style="color:rgba(245,242,235,0.5)">Prototipo · Ruta 3</div>
+      <h2>Kit de Estudio Mechón</h2>
+      <p>Tu guía semanal personalizada para estudiar cada ramo con claridad y orden.</p>
+    </div>
+
+    <div class="kit-ramo-selector">
+      <h3>Elige el ramo para ver el kit</h3>
+      <div class="ramo-select-grid">
+        <button class="ramo-btn selected" onclick="selectKitRamo(this,'Cálculo I')">Cálculo I</button>
+        <button class="ramo-btn" onclick="selectKitRamo(this,'Álgebra Lineal')">Álgebra Lineal</button>
+        <button class="ramo-btn" onclick="selectKitRamo(this,'Microeconomía')">Microeconomía</button>
+        <button class="ramo-btn" onclick="selectKitRamo(this,'Contabilidad')">Contabilidad</button>
+        <button class="ramo-btn" onclick="selectKitRamo(this,'Estadística')">Estadística</button>
+        <button class="ramo-btn" onclick="selectKitRamo(this,'Intro. Empresa')">Intro. Empresa</button>
+      </div>
+    </div>
+
+    <div id="kit-ramo-label" style="font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:900;margin-bottom:1.2rem;">Kit Semanal — Cálculo I</div>
+
+    <!-- SECCIÓN 1: QUÉ ESTUDIAR -->
+    <div class="kit-section">
+      <div class="kit-section-header">
+        <h3>📚 ¿Qué estudiar esta semana?</h3>
+        <span style="font-size:0.8rem;color:var(--muted)">Semana 6 · Unidad 2</span>
+      </div>
+      <div class="kit-section-body">
+        <p><strong>Tema de la semana:</strong> Límites y continuidad</p>
+        <p>Antes de la próxima clase deberías dominar estos contenidos:</p>
+        <ul>
+          <li>Definición de límite y su interpretación gráfica</li>
+          <li>Límites laterales: cuándo existen y cuándo no</li>
+          <li>Indeterminaciones 0/0 y ∞/∞ — cómo resolverlas</li>
+          <li>Regla de L'Hôpital y cuándo aplicarla</li>
+          <li>Continuidad: definición y tipos de discontinuidad</li>
+        </ul>
+        <p style="margin-top:0.8rem"><strong>Material recomendado (en orden):</strong></p>
+        <ul>
+          <li>1° Diapositivas del profesor (Nube Mechona → Cálculo I → Semana 6)</li>
+          <li>2° Guía de ejercicios N°3 (misma carpeta)</li>
+          <li>3° Certamen 2021 (solo preguntas 1 y 2)</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- SECCIÓN 2: ORDEN DE ESTUDIO -->
+    <div class="kit-section">
+      <div class="kit-section-header">
+        <h3>🗂️ Orden de estudio sugerido</h3>
+        <span style="font-size:0.8rem;color:var(--muted)">~2.5 horas</span>
+      </div>
+      <div class="kit-section-body">
+        <div class="order-step">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <strong>Leer el PPT sin detenerte (20 min)</strong>
+            <p>Solo lee. No tomes apuntes aún. El objetivo es tener el panorama general antes de profundizar.</p>
+          </div>
+        </div>
+        <div class="order-step">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <strong>Resumir con tus propias palabras (30 min)</strong>
+            <p>Escribe en una hoja qué es un límite y qué es la continuidad como si se lo explicaras a un amigo. Sin copiar definiciones.</p>
+          </div>
+        </div>
+        <div class="order-step">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <strong>Resolver 3 ejercicios de la guía (40 min)</strong>
+            <p>Elige los ejercicios marcados con ★ en la guía. Son los más representativos del certamen. Primero intenta solo.</p>
+          </div>
+        </div>
+        <div class="order-step">
+          <div class="step-num">4</div>
+          <div class="step-content">
+            <strong>Corregir y entender los errores (20 min)</strong>
+            <p>Compara con las soluciones. Por cada error, escribe por qué te equivocaste — no solo cuál era la respuesta correcta.</p>
+          </div>
+        </div>
+        <div class="order-step">
+          <div class="step-num">5</div>
+          <div class="step-content">
+            <strong>Repasar lo que te costó (20 min)</strong>
+            <p>Vuelve solo al contenido que te generó errores. Repite un ejercicio similar hasta que salga solo.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECCIÓN 3: CHECKLIST -->
+    <div class="kit-section">
+      <div class="kit-section-header">
+        <h3>✅ Checklist pre-certamen</h3>
+        <span style="font-size:0.8rem;color:var(--muted)">Marca lo que ya dominas</span>
+      </div>
+      <div class="kit-section-body">
+        <div class="checklist-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <span>Puedo explicar qué es un límite sin leer la definición</span>
+        </div>
+        <div class="checklist-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <span>Sé calcular límites laterales y verificar si el límite existe</span>
+        </div>
+        <div class="checklist-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <span>Sé identificar cuándo hay una indeterminación 0/0 o ∞/∞</span>
+        </div>
+        <div class="checklist-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <span>Sé cuándo usar L'Hôpital y cuándo NO usarlo</span>
+        </div>
+        <div class="checklist-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <span>Puedo verificar si una función es continua en un punto</span>
+        </div>
+        <div class="checklist-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <span>Resolví al menos 3 ejercicios completos sin ver la solución</span>
+        </div>
+        <div class="checklist-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <span>Revisé al menos 1 certamen anterior de este ramo</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECCIÓN 4: ERRORES FRECUENTES -->
+    <div class="kit-section">
+      <div class="kit-section-header">
+        <h3>⚠️ Errores frecuentes en este ramo</h3>
+      </div>
+      <div class="kit-section-body">
+        <ul>
+          <li><strong>Aplicar L'Hôpital sin tener indeterminación.</strong> Primero evalúa directamente — si no hay 0/0 o ∞/∞, L'Hôpital no aplica.</li>
+          <li style="margin-top:0.5rem"><strong>Confundir límite con valor de la función.</strong> El límite puede existir aunque la función no esté definida en ese punto.</li>
+          <li style="margin-top:0.5rem"><strong>No verificar ambos límites laterales.</strong> Para que el límite exista, el límite por la izquierda y por la derecha deben ser iguales.</li>
+          <li style="margin-top:0.5rem"><strong>Olvidar las 3 condiciones de continuidad.</strong> Las tres deben cumplirse — si falta una, la función no es continua en ese punto.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div style="background:var(--highlight);border:1px solid rgba(45,106,79,0.2);border-radius:12px;padding:1.2rem;text-align:center;margin-top:0.5rem">
+      <p style="font-size:0.9rem;font-weight:500;color:var(--accent);margin-bottom:0.4rem">¿El kit te fue útil?</p>
+      <p style="font-size:0.82rem;color:var(--muted);margin-bottom:0.8rem">Tu opinión nos ayuda a mejorarlo para todos los mechones.</p>
+      <div style="display:flex;gap:0.5rem;justify-content:center;flex-wrap:wrap">
+        <button onclick="feedbackKit('util')" style="padding:0.5rem 1rem;border-radius:999px;border:1px solid var(--accent);background:white;color:var(--accent);font-size:0.82rem;cursor:pointer;">👍 Sí, lo usaría</button>
+        <button onclick="feedbackKit('parcial')" style="padding:0.5rem 1rem;border-radius:999px;border:1px solid var(--border);background:white;color:var(--ink);font-size:0.82rem;cursor:pointer;">😐 Parcialmente</button>
+        <button onclick="feedbackKit('no')" style="padding:0.5rem 1rem;border-radius:999px;border:1px solid var(--border);background:white;color:var(--ink);font-size:0.82rem;cursor:pointer;">👎 No lo usaría</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     SCREEN 6: GRACIAS
+═══════════════════════════════════════════ -->
+<div class="screen" id="screen-thanks">
+  <div class="thanks-inner">
+    <div class="thanks-icon">🌱</div>
+    <h2>¡Muchas gracias!</h2>
+    <p id="thanks-msg">Tus respuestas son muy valiosas para nuestro proyecto. Con esto nos ayudas a diseñar una solución que realmente sirva para los mechones de la FEN.</p>
+    <button class="btn-primary" onclick="goTo('screen-landing')">Volver al inicio</button>
+    <div style="margin-top:1rem">
+      <button class="btn-secondary" onclick="goTo('screen-prototipo')">Probar el prototipo</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── NAVIGATION ──
+function goTo(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+// ── ENCUESTA LOGIC ──
+const scales = {};
+function updateProgress() {
+  const radios = ['q1','q2','q3','q8','q9','q10'];
+  let answered = radios.filter(q => document.querySelector(`input[name="${q}"]:checked`)).length;
+  const scaleAnswered = ['q5','q6','q7'].filter(q => scales[q]).length;
+  const total = 10;
+  const pct = Math.round(((answered + scaleAnswered) / total) * 100);
+  document.getElementById('enc-progress').style.width = pct + '%';
+}
+
+function markSelected(input) {
+  const group = input.closest('.radio-group');
+  group.querySelectorAll('.radio-option').forEach(o => o.classList.remove('selected'));
+  input.closest('.radio-option').classList.add('selected');
+  updateProgress();
+}
+
+function markCheckSelected(input) {
+  input.closest('.check-option').classList.toggle('selected', input.checked);
+}
+
+function selectScale(qid, val, btn) {
+  const row = document.getElementById(qid);
+  row.querySelectorAll('.scale-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  scales[qid] = val;
+  updateProgress();
+}
+
+function submitEncuesta() {
+  const btn = document.getElementById('enc-submit');
+  btn.disabled = true;
+  btn.textContent = 'Enviando…';
+  // Collect data
+  const data = {};
+  ['q1','q2','q3','q8','q9','q10'].forEach(q => {
+    const checked = document.querySelector(`input[name="${q}"]:checked`);
+    data[q] = checked ? checked.value : null;
+  });
+  ['q5','q6','q7'].forEach(q => { data[q] = scales[q] || null; });
+  const checks = Array.from(document.querySelectorAll('input[name="q4"]:checked')).map(i=>i.value);
+  data['q4'] = checks;
+  console.log('Encuesta:', data);
+  setTimeout(() => {
+    document.getElementById('thanks-msg').textContent = 'Tus respuestas quedaron registradas. Con esto nos ayudas a diseñar una solución que realmente sirva para los mechones de la FEN.';
+    goTo('screen-thanks');
+  }, 800);
+}
+
+// ── ENTREVISTA LOGIC ──
+function submitEntrevista() {
+  const answers = Array.from(document.querySelectorAll('#screen-entrevista textarea')).map(t => t.value);
+  console.log('Entrevista registrada:', answers);
+  document.getElementById('thanks-msg').textContent = 'El registro de entrevista fue guardado. Recuerda anotar también la ruta elegida por el entrevistado para el análisis.';
+  goTo('screen-thanks');
+}
+
+// ── PROTOTIPO LOGIC ──
+let selectedRamo = 'Cálculo I';
+function selectRamo(btn, ramo) {
+  document.querySelectorAll('#ramo-grid .ramo-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  selectedRamo = ramo;
+}
+
+function handleFile(input) {
+  if (input.files[0]) {
+    document.getElementById('upload-text').textContent = '✓ ' + input.files[0].name;
+    document.getElementById('upload-sub').textContent = 'Archivo listo para procesar';
+    document.getElementById('upload-zone').classList.add('active');
+  }
+}
+
+function handleDrop(e) {
+  e.preventDefault();
+  const file = e.dataTransfer.files[0];
+  if (file) {
+    document.getElementById('upload-text').textContent = '✓ ' + file.name;
+    document.getElementById('upload-sub').textContent = 'Archivo listo para procesar';
+    document.getElementById('upload-zone').classList.add('active');
+  }
+}
+
+function generateOutput() {
+  const loading = document.getElementById('loading');
+  loading.classList.add('visible');
+  document.getElementById('ramo-name-r').textContent = selectedRamo;
+  setTimeout(() => {
+    loading.classList.remove('visible');
+    const out = document.getElementById('output-area');
+    out.classList.add('visible');
+    out.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 2000);
+}
+
+function switchTab(tabId, btn) {
+  document.querySelectorAll('.output-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.output-tab').forEach(b => b.classList.remove('active'));
+  document.getElementById(tabId).classList.add('active');
+  btn.classList.add('active');
+}
+
+function checkQuiz(opt, type) {
+  const group = opt.closest('.quiz-options');
+  if (group.querySelector('.correct, .wrong')) return;
+  opt.classList.add(type);
+  if (type === 'wrong') {
+    const correct = group.querySelector('[onclick*="correct"]');
+    setTimeout(() => correct.classList.add('correct'), 400);
+  }
+}
+
+function feedback(type) {
+  const msgs = { util:'¡Gracias! Ese feedback nos ayuda mucho.', mas_o_menos:'Gracias. ¿Qué mejorarías? Anota tu comentario al equipo.', no:'Gracias por la honestidad. ¿Qué no funcionó? Es útil saberlo.' };
+  alert(msgs[type]);
+}
+
+// ── KIT LOGIC ──
+function selectKitRamo(btn, ramo) {
+  document.querySelectorAll('#screen-kit .ramo-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  document.getElementById('kit-ramo-label').textContent = 'Kit Semanal — ' + ramo;
+}
+
+function toggleCheck(item) {
+  item.classList.toggle('done');
+}
+
+function feedbackKit(type) {
+  const msgs = { util:'¡Perfecto! Lo anotamos.', parcial:'Gracias. ¿Qué parte te fue menos útil?', no:'Gracias. ¿Qué necesitarías que tuviera para usarlo?' };
+  alert(msgs[type]);
+}
+</script>
+</body>
+</html>
